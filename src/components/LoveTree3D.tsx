@@ -49,7 +49,7 @@ async function createScene(
     treeHeight: 20,
     treeRadius: 7,
     cameraZ: 45,
-    photoSize: 1.2,
+    photoSize: 1.5,
     fps: isLow ? 30 : 60,
   };
 
@@ -362,7 +362,8 @@ async function createScene(
         group.add(frame);
         group.add(photo);
         frame.scale.set(w / (CFG.photoSize * 1.15), h / (CFG.photoSize * 1.15), 1);
-        group.scale.set(0.7, 0.7, 0.7);
+        group.scale.set(0.9, 0.9, 0.9);
+        group.userData.url = url;
         photoGroup.add(group);
 
         const rS = 8 + Math.random() * 12;
@@ -377,7 +378,7 @@ async function createScene(
             rS * Math.sin(phi) * Math.sin(theta),
             rS * Math.cos(phi)
           ),
-          baseScale: 0.7,
+          baseScale: 0.9,
           spinSpeed: new THREE.Vector3(
             (Math.random() - 0.5) * 0.3,
             (Math.random() - 0.5) * 0.3,
@@ -446,24 +447,11 @@ async function createScene(
     raycaster.setFromCamera(mouse, camera);
     const hits = raycaster.intersectObjects(photoGroup.children, true);
     if (hits.length > 0) {
-      let obj = hits[0].object;
+      // 向上找到 photoGroup 的直接子 Group
+      let obj: THREE.Object3D = hits[0].object;
       while (obj.parent && obj.parent !== photoGroup) obj = obj.parent;
-      const particle = particles.find(
-        (p) => p.type === "PHOTO" && p.mesh === obj
-      );
-      if (particle) {
-        // 找到对应的 URL — 通过 texture
-        const photoMesh = (obj as THREE.Group).children.find(
-          (c) => (c as THREE.Mesh).material
-        ) as THREE.Mesh | undefined;
-        if (photoMesh) {
-          const mat = photoMesh.material as THREE.MeshBasicMaterial;
-          if (mat.map) {
-            const src = ((mat.map as THREE.Texture).image as HTMLImageElement | undefined)?.src;
-            if (src) onPhotoClick(src);
-          }
-        }
-      }
+      const url = obj.userData?.url;
+      if (url) onPhotoClick(url);
     }
   }
 
