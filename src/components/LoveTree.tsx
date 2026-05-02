@@ -24,7 +24,7 @@ function arrangePhotos(
   topPad: number
 ) {
   if (count === 0 || treeH <= 0) return [];
-  const tiers = Math.max(2, Math.min(35, Math.ceil(Math.sqrt(count * 0.4))));
+  const tiers = Math.max(1, Math.min(40, Math.ceil(count / 8)));
   const positions: { x: number; y: number }[] = [];
   let placed = 0;
 
@@ -76,16 +76,16 @@ export default function LoveTree({ photos, onPhotoClick }: LoveTreeProps) {
   const [grown, setGrown] = useState(false);
   const [showPhotos, setShowPhotos] = useState(false);
 
-  // 树的尺寸（随照片数量增长）
-  const tiers = Math.max(2, Math.min(35, Math.ceil(Math.sqrt(count * 0.4))));
-  const treeH = tiers * 10;
+  // 树的尺寸（每 8 张照片长一层，最大 40 层）
+  const tiers = Math.max(1, Math.min(40, Math.ceil(count / 8)));
+  const treeH = tiers * 12;
   const treeW = treeH * 0.7;
   const svgW = treeW + 20;
   const svgH = treeH + 65;
   const topPad = 22;
 
   // 心形大小（照片越多，每颗心越小）
-  const heartSize = count <= 30 ? 14 : Math.max(7, Math.round(14 / Math.sqrt(count / 30)));
+  const heartSize = Math.max(8, Math.round(16 / Math.pow(count / 20, 0.25)));
 
   // 装饰数据（useMemo 避免每次渲染重新随机）
   const decor = useMemo(
@@ -172,8 +172,8 @@ export default function LoveTree({ photos, onPhotoClick }: LoveTreeProps) {
             />
 
             {/* 树枝分层（锯齿边缘） */}
-            {Array.from({ length: Math.min(tiers, 25) }).map((_, i) => {
-              const t = (i + 1) / Math.min(tiers, 25);
+            {Array.from({ length: Math.min(tiers, 40) }).map((_, i) => {
+              const t = (i + 1) / Math.min(tiers, 40);
               const y = topPad + t * treeH;
               const halfW = (treeW / 2) * t;
               const cx = svgW / 2;
