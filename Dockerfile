@@ -1,4 +1,4 @@
-FROM node:18-alpine AS base
+FROM node:20-alpine AS base
 RUN echo "http://mirrors.aliyun.com/alpine/v3.21/main" > /etc/apk/repositories && \
     echo "http://mirrors.aliyun.com/alpine/v3.21/community" >> /etc/apk/repositories
 
