@@ -1,24 +1,23 @@
 "use client";
 
+import Image from "next/image";
+
+const kittyImages = [
+  "/kitty/kitty1.webp",
+  "/kitty/kitty2.webp",
+  "/kitty/kitty3.webp",
+];
+
 export function HelloKittyLogo({ size = 48 }: { size?: number }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <ellipse cx="50" cy="55" rx="35" ry="30" fill="white" stroke="#FDA4AF" strokeWidth="2"/>
-      <ellipse cx="38" cy="52" rx="3" ry="4" fill="#1a1a1a"/>
-      <ellipse cx="62" cy="52" rx="3" ry="4" fill="#1a1a1a"/>
-      <ellipse cx="50" cy="58" rx="2.5" ry="2" fill="#F59E0B"/>
-      <line x1="15" y1="50" x2="35" y2="53" stroke="#1a1a1a" strokeWidth="1.5"/>
-      <line x1="15" y1="57" x2="35" y2="57" stroke="#1a1a1a" strokeWidth="1.5"/>
-      <line x1="15" y1="64" x2="35" y2="61" stroke="#1a1a1a" strokeWidth="1.5"/>
-      <line x1="85" y1="50" x2="65" y2="53" stroke="#1a1a1a" strokeWidth="1.5"/>
-      <line x1="85" y1="57" x2="65" y2="57" stroke="#1a1a1a" strokeWidth="1.5"/>
-      <line x1="85" y1="64" x2="65" y2="61" stroke="#1a1a1a" strokeWidth="1.5"/>
-      <path d="M25 25 Q35 15 45 25 Q35 35 25 25Z" fill="#E11D48"/>
-      <path d="M55 25 Q65 15 75 25 Q65 35 55 25Z" fill="#E11D48"/>
-      <circle cx="50" cy="25" r="5" fill="#BE123C"/>
-      <ellipse cx="22" cy="30" rx="8" ry="12" fill="white" stroke="#FDA4AF" strokeWidth="2"/>
-      <ellipse cx="78" cy="30" rx="8" ry="12" fill="white" stroke="#FDA4AF" strokeWidth="2"/>
-    </svg>
+    <Image
+      src="/kitty/kitty2.webp"
+      alt="Hello Kitty"
+      width={size}
+      height={size}
+      className="object-contain"
+      priority
+    />
   );
 }
 
@@ -98,9 +97,17 @@ export function KittyDecorCorner({ position = "bottom-right" }: { position?: str
     "bottom-right": "bottom-16 right-4",
   }[position] || "bottom-16 right-4";
 
+  const kittyIndex = position === "bottom-left" ? 0 : position === "top-right" ? 2 : 1;
+
   return (
-    <div className={`fixed ${posClass} opacity-20 pointer-events-none z-0`}>
-      <HelloKittyLogo size={80} />
+    <div className={`fixed ${posClass} opacity-15 pointer-events-none z-0`}>
+      <Image
+        src={kittyImages[kittyIndex]}
+        alt="Hello Kitty"
+        width={100}
+        height={100}
+        className="object-contain"
+      />
     </div>
   );
 }

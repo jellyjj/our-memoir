@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Our Memoir",
-  description: "A place for our sweetest memories",
+  title: "航林 & 佳钰 · 我们的故事",
+  description: "记录属于我们的每一个甜蜜时刻",
+  icons: {
+    icon: "/kitty/Kitty-icon.webp",
+  },
 };
 
 export default function RootLayout({
