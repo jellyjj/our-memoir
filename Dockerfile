@@ -38,7 +38,6 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
 COPY --from=builder /app/node_modules/better-sqlite3 ./node_modules/better-sqlite3
@@ -46,6 +45,7 @@ COPY --from=builder /app/node_modules/@prisma/adapter-better-sqlite3 ./node_modu
 
 # Copy seed script and generated prisma client
 COPY --from=builder /app/scripts ./scripts
+RUN mkdir -p src/generated
 COPY --from=builder /app/src/generated ./src/generated
 
 COPY docker-entrypoint.sh /app/docker-entrypoint.sh
