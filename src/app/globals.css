@@ -1,0 +1,150 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-pink-50: #FFF0F5;
+  --color-pink-100: #FFE4E9;
+  --color-pink-200: #FFC2D1;
+  --color-pink-300: #FFA0B4;
+  --color-pink-400: #FF69B4;
+  --color-pink-500: #FF1493;
+  --color-pink-600: #DB0077;
+  --color-pink-700: #B8005C;
+  --color-pink-800: #94004A;
+  --color-pink-900: #6E0038;
+  --font-sans: "Segoe UI", system-ui, sans-serif;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  25% { transform: translateY(-15px) rotate(5deg); }
+  75% { transform: translateY(10px) rotate(-5deg); }
+}
+
+@keyframes pulse-heart {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounce-in {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+.animate-pulse-heart {
+  animation: pulse-heart 1.5s ease-in-out infinite;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.5s ease-out forwards;
+}
+
+.animate-bounce-in {
+  animation: bounce-in 0.4s ease-out forwards;
+}
+
+body {
+  background: linear-gradient(135deg, #FFF0F5 0%, #FFE4E9 50%, #FFF0F5 100%);
+  min-height: 100vh;
+}
+
+/* Kitty-themed card */
+.kitty-card {
+  background: white;
+  border-radius: 1rem;
+  border: 2px solid #FFC2D1;
+  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.15);
+  transition: all 0.3s ease;
+}
+
+.kitty-card:hover {
+  box-shadow: 0 8px 25px rgba(255, 105, 180, 0.25);
+  transform: translateY(-2px);
+}
+
+/* Kitty button */
+.kitty-btn {
+  background: linear-gradient(135deg, #FF69B4, #FF1493);
+  color: white;
+  border-radius: 9999px;
+  padding: 0.5rem 1.5rem;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 20, 147, 0.3);
+}
+
+.kitty-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 20, 147, 0.4);
+}
+
+.kitty-btn:active {
+  transform: translateY(0);
+}
+
+/* Kitty input */
+.kitty-input {
+  border: 2px solid #FFC2D1;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1rem;
+  outline: none;
+  transition: all 0.3s ease;
+  background: white;
+}
+
+.kitty-input:focus {
+  border-color: #FF69B4;
+  box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.2);
+}
+
+/* Timeline styles */
+.timeline-line {
+  background: linear-gradient(to bottom, #FF69B4, #FFB6C1);
+}
+
+/* Photo frame */
+.kitty-frame {
+  border: 3px solid #FFB6C1;
+  border-radius: 1rem;
+  padding: 6px;
+  background: white;
+  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.2);
+}
+
+.kitty-frame::before {
+  content: "🎀";
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 20px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FFF0F5;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #FFB6C1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #FF69B4;
+}

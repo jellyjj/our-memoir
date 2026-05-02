@@ -1,0 +1,18 @@
+services:
+  couple-memoir:
+    build: .
+    container_name: couple-memoir
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=file:/app/data/dev.db
+      - SITE_PASSWORD=love
+      - NODE_ENV=production
+    volumes:
+      - couple-data:/app/data
+      - couple-uploads:/app/public/uploads
+
+volumes:
+  couple-data:
+  couple-uploads:

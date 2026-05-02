@@ -1,0 +1,29 @@
+-- CreateTable
+CREATE TABLE "Memory" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "title" TEXT NOT NULL,
+    "content" TEXT,
+    "date" DATETIME NOT NULL,
+    "photos" TEXT NOT NULL DEFAULT '[]',
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateTable
+CREATE TABLE "Diary" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "title" TEXT NOT NULL,
+    "content" TEXT NOT NULL,
+    "mood" TEXT NOT NULL,
+    "date" DATETIME NOT NULL,
+    "author" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL
+);
+
+-- CreateTable
+CREATE TABLE "MissYou" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "fromWho" TEXT NOT NULL,
+    "message" TEXT,
+    "timestamp" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
