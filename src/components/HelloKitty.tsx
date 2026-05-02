@@ -11,9 +11,7 @@ export function HelloKittyLogo({ size = 48 }: { size?: number }) {
     <img
       src="/kitty/kitty2.webp"
       alt="Hello Kitty"
-      width={size}
-      height={size}
-      className="object-contain"
+      style={{ width: size, height: size }}
     />
   );
 }
@@ -101,9 +99,7 @@ export function KittyDecorCorner({ position = "bottom-right" }: { position?: str
       <img
         src={kittyImages[kittyIndex]}
         alt="Hello Kitty"
-        width={100}
-        height={100}
-        className="object-contain"
+        style={{ width: 100, height: 100 }}
       />
     </div>
   );
