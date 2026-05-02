@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "我们的回忆 💕",
-  description: "情侣回忆录 - 记录每一个甜蜜瞬间",
+  title: "Our Memoir",
+  description: "A place for our sweetest memories",
 };
 
 export default function RootLayout({

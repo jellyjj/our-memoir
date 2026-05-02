@@ -1,43 +1,50 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Infant:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Great+Vibes&display=swap');
 
 @theme inline {
-  --color-pink-50: #FFF0F5;
-  --color-pink-100: #FFE4E9;
-  --color-pink-200: #FFC2D1;
-  --color-pink-300: #FFA0B4;
-  --color-pink-400: #FF69B4;
-  --color-pink-500: #FF1493;
-  --color-pink-600: #DB0077;
-  --color-pink-700: #B8005C;
-  --color-pink-800: #94004A;
-  --color-pink-900: #6E0038;
-  --font-sans: "Segoe UI", system-ui, sans-serif;
+  --color-rose-50: #FFF1F2;
+  --color-rose-100: #FFE4E6;
+  --color-rose-200: #FECDD3;
+  --color-rose-300: #FDA4AF;
+  --color-rose-400: #FB7185;
+  --color-rose-500: #E11D48;
+  --color-rose-600: #BE123C;
+  --color-rose-700: #9F1239;
+  --color-rose-800: #881337;
+  --color-rose-900: #4C0519;
+  --font-script: "Great Vibes", cursive;
+  --font-serif: "Cormorant Infant", "Georgia", serif;
+  --font-sans: "Cormorant Infant", system-ui, sans-serif;
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  25% { transform: translateY(-15px) rotate(5deg); }
-  75% { transform: translateY(10px) rotate(-5deg); }
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.15; }
+  50% { transform: translateY(-20px) rotate(5deg); opacity: 0.25; }
 }
 
 @keyframes pulse-heart {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.15); }
+  50% { transform: scale(1.1); }
 }
 
 @keyframes slide-up {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(16px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes bounce-in {
   0% { transform: scale(0); }
-  50% { transform: scale(1.2); }
+  50% { transform: scale(1.1); }
   100% { transform: scale(1); }
 }
 
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
 .animate-float {
-  animation: float 4s ease-in-out infinite;
+  animation: float 6s ease-in-out infinite;
 }
 
 .animate-pulse-heart {
@@ -45,106 +52,139 @@
 }
 
 .animate-slide-up {
-  animation: slide-up 0.5s ease-out forwards;
+  animation: slide-up 0.6s ease-out forwards;
 }
 
 .animate-bounce-in {
   animation: bounce-in 0.4s ease-out forwards;
 }
 
-body {
-  background: linear-gradient(135deg, #FFF0F5 0%, #FFE4E9 50%, #FFF0F5 100%);
-  min-height: 100vh;
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
 }
 
-/* Kitty-themed card */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-pulse-heart,
+  .animate-slide-up,
+  .animate-bounce-in,
+  .animate-shimmer {
+    animation: none !important;
+  }
+}
+
+body {
+  background: linear-gradient(135deg, #FFF1F2 0%, #FFE4E6 40%, #FFF1F2 100%);
+  min-height: 100vh;
+  font-family: "Cormorant Infant", system-ui, serif;
+  color: #881337;
+}
+
+/* Card - Soft UI Evolution */
 .kitty-card {
-  background: white;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
   border-radius: 1rem;
-  border: 2px solid #FFC2D1;
-  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.15);
-  transition: all 0.3s ease;
+  border: 1px solid rgba(253, 164, 175, 0.4);
+  box-shadow: 0 2px 8px rgba(225, 29, 72, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.25s ease-out;
 }
 
 .kitty-card:hover {
-  box-shadow: 0 8px 25px rgba(255, 105, 180, 0.25);
+  box-shadow: 0 8px 24px rgba(225, 29, 72, 0.1), 0 2px 8px rgba(0, 0, 0, 0.04);
   transform: translateY(-2px);
 }
 
-/* Kitty button */
+/* Button - Soft UI */
 .kitty-btn {
-  background: linear-gradient(135deg, #FF69B4, #FF1493);
+  background: linear-gradient(135deg, #E11D48, #BE123C);
   color: white;
   border-radius: 9999px;
-  padding: 0.5rem 1.5rem;
+  padding: 0.625rem 1.75rem;
   font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
   border: none;
   cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(255, 20, 147, 0.3);
+  transition: all 0.2s ease-out;
+  box-shadow: 0 2px 8px rgba(225, 29, 72, 0.25);
 }
 
 .kitty-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 20, 147, 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(225, 29, 72, 0.35);
 }
 
 .kitty-btn:active {
   transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(225, 29, 72, 0.2);
 }
 
-/* Kitty input */
+/* Input - Soft UI */
 .kitty-input {
-  border: 2px solid #FFC2D1;
+  border: 1.5px solid rgba(253, 164, 175, 0.5);
   border-radius: 0.75rem;
   padding: 0.75rem 1rem;
   outline: none;
-  transition: all 0.3s ease;
-  background: white;
+  transition: all 0.2s ease-out;
+  background: rgba(255, 255, 255, 0.7);
+  font-family: inherit;
+  color: #881337;
+}
+
+.kitty-input::placeholder {
+  color: #FDA4AF;
 }
 
 .kitty-input:focus {
-  border-color: #FF69B4;
-  box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.2);
+  border-color: #E11D48;
+  box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.1);
+  background: white;
 }
 
-/* Timeline styles */
+/* Timeline */
 .timeline-line {
-  background: linear-gradient(to bottom, #FF69B4, #FFB6C1);
+  background: linear-gradient(to bottom, #E11D48, #FDA4AF, #FECDD3);
 }
 
 /* Photo frame */
 .kitty-frame {
-  border: 3px solid #FFB6C1;
+  border: 2px solid rgba(253, 164, 175, 0.5);
   border-radius: 1rem;
-  padding: 6px;
+  padding: 4px;
   background: white;
-  box-shadow: 0 4px 15px rgba(255, 105, 180, 0.2);
+  box-shadow: 0 2px 8px rgba(225, 29, 72, 0.08);
+  overflow: hidden;
+  transition: all 0.25s ease-out;
 }
 
-.kitty-frame::before {
-  content: "🎀";
-  position: absolute;
-  top: -12px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 20px;
+.kitty-frame:hover {
+  box-shadow: 0 6px 20px rgba(225, 29, 72, 0.15);
+  transform: scale(1.02);
 }
 
 /* Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #FFF0F5;
+  background: #FFF1F2;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #FFB6C1;
-  border-radius: 4px;
+  background: #FDA4AF;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #FF69B4;
+  background: #FB7185;
+}
+
+/* Selection */
+::selection {
+  background: rgba(225, 29, 72, 0.15);
+  color: #881337;
 }

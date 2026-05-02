@@ -16,6 +16,46 @@ interface Memory {
 
 const START_DATE = new Date("2025-10-20");
 
+function PlusIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+    </svg>
+  );
+}
+
+function PencilIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+    </svg>
+  );
+}
+
+function TrashIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+    </svg>
+  );
+}
+
+function UploadIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
+    </svg>
+  );
+}
+
+function EmptyIcon({ className = "w-16 h-16" }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" opacity={0.3}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+    </svg>
+  );
+}
+
 export default function TimelinePage() {
   const [memories, setMemories] = useState<Memory[]>([]);
   const [showForm, setShowForm] = useState(false);
@@ -104,11 +144,11 @@ export default function TimelinePage() {
       <div className="max-w-3xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="text-center mb-10 animate-slide-up">
-          <h1 className="text-3xl font-bold text-pink-500 mb-2">
-            我们的故事 🌸
+          <h1 className="font-script text-4xl text-rose-500 mb-3">
+            Our Story
           </h1>
-          <p className="text-pink-400">
-            已经在一起 <span className="text-2xl font-bold text-pink-500">{daysTogether}</span> 天啦 💕
+          <p className="text-rose-400 text-lg font-serif">
+            Together for <span className="text-3xl font-bold text-rose-500">{daysTogether}</span> days
           </p>
         </div>
 
@@ -116,9 +156,9 @@ export default function TimelinePage() {
         <div className="flex justify-center mb-8">
           <button
             onClick={() => (showForm ? resetForm() : setShowForm(true))}
-            className="kitty-btn flex items-center gap-2"
+            className="kitty-btn flex items-center gap-2 cursor-pointer"
           >
-            {showForm ? "取消" : "✨ 添加新回忆"}
+            {showForm ? "Cancel" : <><PlusIcon /> New Memory</>}
           </button>
         </div>
 
@@ -134,13 +174,13 @@ export default function TimelinePage() {
               <div className="kitty-card p-6 space-y-4">
                 <input
                   className="kitty-input w-full"
-                  placeholder="回忆标题 🎀"
+                  placeholder="Memory title"
                   value={form.title}
                   onChange={(e) => setForm({ ...form, title: e.target.value })}
                 />
                 <textarea
                   className="kitty-input w-full h-24 resize-none"
-                  placeholder="记录一下这个美好时刻..."
+                  placeholder="Write about this moment..."
                   value={form.content}
                   onChange={(e) => setForm({ ...form, content: e.target.value })}
                 />
@@ -151,15 +191,15 @@ export default function TimelinePage() {
                   onChange={(e) => setForm({ ...form, date: e.target.value })}
                 />
                 <div>
-                  <label className="block text-pink-500 text-sm mb-2">上传照片</label>
+                  <label className="block text-rose-500 text-sm mb-2 font-serif">Upload photos</label>
                   <input
                     type="file"
                     accept="image/*"
                     multiple
                     onChange={handleUpload}
-                    className="text-sm text-pink-400"
+                    className="text-sm text-rose-400 cursor-pointer"
                   />
-                  {uploading && <p className="text-pink-400 text-sm mt-1">上传中...</p>}
+                  {uploading && <p className="text-rose-400 text-sm mt-1">Uploading...</p>}
                   {form.photos.length > 0 && (
                     <div className="flex gap-2 mt-2 flex-wrap">
                       {form.photos.map((url, i) => (
@@ -167,14 +207,14 @@ export default function TimelinePage() {
                           key={i}
                           src={url}
                           alt=""
-                          className="w-16 h-16 object-cover rounded-lg border-2 border-pink-200"
+                          className="w-16 h-16 object-cover rounded-lg border-2 border-rose-200"
                         />
                       ))}
                     </div>
                   )}
                 </div>
-                <button onClick={handleSubmit} className="kitty-btn w-full">
-                  {editingId ? "更新回忆 💖" : "保存回忆 💖"}
+                <button onClick={handleSubmit} className="kitty-btn w-full cursor-pointer">
+                  {editingId ? "Update Memory" : "Save Memory"}
                 </button>
               </div>
             </motion.div>
@@ -186,9 +226,9 @@ export default function TimelinePage() {
           <div className="absolute left-6 top-0 bottom-0 w-0.5 timeline-line rounded-full" />
 
           {memories.length === 0 ? (
-            <div className="text-center py-20 text-pink-400">
-              <p className="text-6xl mb-4">🎀</p>
-              <p className="text-lg">还没有回忆，快去添加第一个吧~</p>
+            <div className="text-center py-20 text-rose-300">
+              <EmptyIcon className="w-16 h-16 mx-auto mb-4" />
+              <p className="text-lg font-serif">No memories yet — add your first one!</p>
             </div>
           ) : (
             memories.map((memory, index) => (
@@ -200,35 +240,35 @@ export default function TimelinePage() {
                 className="relative pl-16 pb-8"
               >
                 {/* Timeline dot */}
-                <div className="absolute left-4 top-2 w-5 h-5 bg-pink-400 rounded-full border-4 border-white shadow-md z-10 flex items-center justify-center">
+                <div className="absolute left-4 top-2 w-5 h-5 bg-rose-400 rounded-full border-4 border-white shadow-md z-10 flex items-center justify-center">
                   <HelloKittyBow size={12} />
                 </div>
 
                 <div className="kitty-card p-5">
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs text-pink-400 bg-pink-50 px-2 py-1 rounded-full">
-                      📅 {new Date(memory.date).toLocaleDateString("zh-CN")}
+                    <span className="text-xs text-rose-400 bg-rose-50 px-3 py-1 rounded-full font-serif">
+                      {new Date(memory.date).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
                     </span>
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleEdit(memory)}
-                        className="text-pink-300 hover:text-pink-500 text-sm"
+                        className="text-rose-300 hover:text-rose-500 text-sm cursor-pointer transition-colors duration-200 flex items-center gap-1"
                       >
-                        编辑
+                        <PencilIcon className="w-3.5 h-3.5" /> Edit
                       </button>
                       <button
                         onClick={() => handleDelete(memory.id)}
-                        className="text-pink-300 hover:text-pink-500 text-sm"
+                        className="text-rose-300 hover:text-rose-500 text-sm cursor-pointer transition-colors duration-200 flex items-center gap-1"
                       >
-                        删除
+                        <TrashIcon className="w-3.5 h-3.5" /> Delete
                       </button>
                     </div>
                   </div>
-                  <h3 className="text-lg font-bold text-pink-600 mb-1">
+                  <h3 className="text-lg font-bold text-rose-600 mb-1 font-serif">
                     {memory.title}
                   </h3>
                   {memory.content && (
-                    <p className="text-pink-500 text-sm mb-3">{memory.content}</p>
+                    <p className="text-rose-500 text-sm mb-3 leading-relaxed">{memory.content}</p>
                   )}
                   {JSON.parse(memory.photos).length > 0 && (
                     <div className="flex gap-2 flex-wrap">
