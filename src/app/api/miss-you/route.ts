@@ -2,18 +2,23 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
 export async function GET() {
-  const records = await prisma.missYou.findMany({
-    orderBy: { timestamp: "desc" },
-    take: 50,
-  });
+  const [records, counts] = await Promise.all([
+    prisma.missYou.findMany({
+      orderBy: { timestamp: "desc" },
+      take: 50,
+    }),
+    prisma.missYou.groupBy({
+      by: ["fromWho"],
+      _count: true,
+    }),
+  ]);
 
-  const total = await prisma.missYou.count();
-  const fromA = await prisma.missYou.count({ where: { fromWho: "A" } });
-  const fromB = total - fromA;
+  const fromA = counts.find((c) => c.fromWho === "A")?._count ?? 0;
+  const fromB = counts.find((c) => c.fromWho === "B")?._count ?? 0;
 
   return NextResponse.json({
     records,
-    stats: { total, fromA, fromB },
+    stats: { total: fromA + fromB, fromA, fromB },
   });
 }
 

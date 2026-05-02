@@ -43,7 +43,6 @@ async function createScene(
   // 性能分级配置
   const CFG = {
     particles: isHigh ? 1000 : isLow ? 300 : 600,
-    snow: isHigh ? 600 : isLow ? 150 : 300,
     bloom: !isLow,
     pixelRatio: isLow ? 1 : Math.min(window.devicePixelRatio, 2),
     treeHeight: 20,
@@ -62,7 +61,6 @@ async function createScene(
     gold: 0xfbbf24,
     pink: 0xfb7185,
     rose: 0xe11d48,
-    snow: 0xffeeff,
   };
 
   // --- 场景初始化 ---
@@ -268,37 +266,6 @@ async function createScene(
   const star = new THREE.Mesh(starGeo, starMat);
   star.position.set(0, CFG.treeHeight / 2 + 1.5, 0);
   mainGroup.add(star);
-
-  // 雪花
-  const snowGeo = new THREE.BufferGeometry();
-  const snowVerts: number[] = [];
-  const snowSpeeds: number[] = [];
-  for (let i = 0; i < CFG.snow; i++) {
-    snowVerts.push(
-      THREE.MathUtils.randFloatSpread(80),
-      THREE.MathUtils.randFloatSpread(50),
-      THREE.MathUtils.randFloatSpread(50)
-    );
-    snowSpeeds.push(Math.random() * 0.15 + 0.05, Math.random() * 0.04);
-  }
-  snowGeo.setAttribute(
-    "position",
-    new THREE.Float32BufferAttribute(snowVerts, 3)
-  );
-  snowGeo.setAttribute(
-    "speed",
-    new THREE.Float32BufferAttribute(snowSpeeds, 2)
-  );
-  const snowMat = new THREE.PointsMaterial({
-    color: COLORS.snow,
-    size: 0.35,
-    transparent: true,
-    opacity: 0.6,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false,
-  });
-  const snow = new THREE.Points(snowGeo, snowMat);
-  scene.add(snow);
 
   // --- 照片系统 ---
   const photoGroup = new THREE.Group();
@@ -529,24 +496,6 @@ async function createScene(
         (p.mesh as THREE.Mesh).rotation.y += 0.8 * dt;
       }
     }
-
-    // 雪花飘落
-    const posAttr = snow.geometry.attributes.position;
-    const spdAttr = snow.geometry.attributes.speed;
-    for (let i = 0; i < CFG.snow; i++) {
-      const y = posAttr.getY(i) - spdAttr.getX(i);
-      const x =
-        posAttr.getX(i) +
-        Math.sin(clock.elapsedTime * 2 + i) * spdAttr.getY(i) * 0.1;
-      if (y < -25) {
-        posAttr.setY(i, 25);
-        posAttr.setX(i, THREE.MathUtils.randFloatSpread(80));
-      } else {
-        posAttr.setY(i, y);
-        posAttr.setX(i, x);
-      }
-    }
-    posAttr.needsUpdate = true;
 
     // 渲染
     if (composer) composer.render();

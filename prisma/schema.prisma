@@ -14,6 +14,8 @@ model Memory {
   date      DateTime
   photos    String   @default("[]")
   createdAt DateTime @default(now())
+
+  @@index([date])
 }
 
 model Diary {
@@ -25,6 +27,8 @@ model Diary {
   author    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([date])
 }
 
 model MissYou {
@@ -32,6 +36,9 @@ model MissYou {
   fromWho   String
   message   String?
   timestamp DateTime @default(now())
+
+  @@index([timestamp])
+  @@index([fromWho])
 }
 
 model Photo {
@@ -40,4 +47,6 @@ model Photo {
   description String?
   pinned      Boolean  @default(false)
   createdAt   DateTime @default(now())
+
+  @@index([pinned, createdAt])
 }

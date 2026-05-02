@@ -9,7 +9,14 @@ function createPrismaClient() {
   const adapter = new PrismaBetterSqlite3({
     url: process.env.DATABASE_URL || "file:./dev.db",
   });
-  return new PrismaClient({ adapter });
+  const client = new PrismaClient({ adapter });
+
+  // 启用 SQLite 性能优化
+  client.$executeRaw`PRAGMA journal_mode=WAL`.catch(() => {});
+  client.$executeRaw`PRAGMA synchronous=NORMAL`.catch(() => {});
+  client.$executeRaw`PRAGMA cache_size=-64000`.catch(() => {}); // 64MB 缓存
+
+  return client;
 }
 
 export const prisma = globalForPrisma.prisma ?? createPrismaClient();
