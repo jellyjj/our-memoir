@@ -1,7 +1,5 @@
 "use client";
 
-import Image from "next/image";
-
 const kittyImages = [
   "/kitty/kitty1.webp",
   "/kitty/kitty2.webp",
@@ -10,13 +8,12 @@ const kittyImages = [
 
 export function HelloKittyLogo({ size = 48 }: { size?: number }) {
   return (
-    <Image
+    <img
       src="/kitty/kitty2.webp"
       alt="Hello Kitty"
       width={size}
       height={size}
       className="object-contain"
-      priority
     />
   );
 }
@@ -101,7 +98,7 @@ export function KittyDecorCorner({ position = "bottom-right" }: { position?: str
 
   return (
     <div className={`fixed ${posClass} opacity-15 pointer-events-none z-0`}>
-      <Image
+      <img
         src={kittyImages[kittyIndex]}
         alt="Hello Kitty"
         width={100}
