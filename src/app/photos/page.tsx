@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import { FloatingHearts, KittyDecorCorner } from "@/components/HelloKitty";
+import LoveTree from "@/components/LoveTree";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Photo {
@@ -173,6 +174,10 @@ export default function PhotosPage() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {photos.length > 0 && (
+          <LoveTree photos={photos} onPhotoClick={setSelectedPhoto} />
+        )}
 
         {!hasPhotos ? (
           <div className="text-center py-20 text-rose-300">

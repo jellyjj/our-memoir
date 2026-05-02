@@ -48,6 +48,11 @@
   to { opacity: 1; }
 }
 
+@keyframes sway {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+
 .animate-float {
   animation: float 6s ease-in-out infinite;
 }
@@ -68,6 +73,15 @@
   animation: fade-in 0.4s ease-out forwards;
 }
 
+.animate-sway {
+  animation: sway 3s ease-in-out infinite;
+}
+
+.animate-sway-delay {
+  animation: sway 3.5s ease-in-out infinite;
+  animation-delay: 1.5s;
+}
+
 .animate-shimmer {
   background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
   background-size: 200% 100%;
@@ -79,7 +93,9 @@
   .animate-pulse-heart,
   .animate-slide-up,
   .animate-bounce-in,
-  .animate-shimmer {
+  .animate-shimmer,
+  .animate-sway,
+  .animate-sway-delay {
     animation: none !important;
   }
 }
@@ -196,4 +212,13 @@ body {
 ::selection {
   background: rgba(225, 29, 72, 0.15);
   color: #881337;
+}
+
+/* Love Tree */
+.love-tree-svg path {
+  transition: opacity 1s ease-out;
+}
+
+.love-leaf {
+  cursor: pointer;
 }
