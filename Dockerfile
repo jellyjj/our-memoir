@@ -26,7 +26,7 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat su-exec
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
@@ -50,8 +50,6 @@ COPY --from=builder /app/src/generated ./src/generated
 
 COPY docker-entrypoint.sh /app/docker-entrypoint.sh
 RUN chmod +x /app/docker-entrypoint.sh
-
-USER nextjs
 
 EXPOSE 3000
 
