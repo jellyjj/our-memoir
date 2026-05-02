@@ -1,5 +1,6 @@
 FROM node:18-alpine AS base
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+RUN echo "http://mirrors.aliyun.com/alpine/v3.21/main" > /etc/apk/repositories && \
+    echo "http://mirrors.aliyun.com/alpine/v3.21/community" >> /etc/apk/repositories
 
 # Install dependencies only when needed
 FROM base AS deps
