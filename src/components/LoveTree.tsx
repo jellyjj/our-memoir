@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useMemo } from "react";
+import { motion } from "framer-motion";
 
 interface Photo {
   id: number;
@@ -15,28 +16,103 @@ interface LoveTreeProps {
 
 const HEART = "M 12.5 28 C 12.5 28 2 20 2 12 C 2 6 6 2 11 2 C 14 2 17 4 18.5 7 C 20 4 23 2 26 2 C 31 2 35 6 35 12 C 35 20 24.5 28 12.5 28 Z";
 
-// 每层照片数量（从底到顶）
-const TIER_SIZES = [20, 14, 10, 7, 5, 3, 2, 1];
+// 计算每张照片在树上的位置（圣诞树形状排列）
+function arrangePhotos(
+  count: number,
+  treeH: number,
+  treeW: number,
+  topPad: number
+) {
+  if (count === 0 || treeH <= 0) return [];
+  const tiers = Math.max(2, Math.min(35, Math.ceil(Math.sqrt(count * 0.4))));
+  const positions: { x: number; y: number }[] = [];
+  let placed = 0;
 
-function getTiers(count: number) {
-  const tiers: number[] = [];
-  let remaining = count;
-  let i = 0;
-  while (remaining > 0) {
-    const size = i < TIER_SIZES.length ? TIER_SIZES[i] : TIER_SIZES[TIER_SIZES.length - 1];
-    tiers.push(Math.min(remaining, size));
-    remaining -= size;
-    i++;
+  for (let tier = 0; tier < tiers && placed < count; tier++) {
+    // 该层在树上的相对位置（0=顶，1=底）
+    const t = (tier + 0.5) / tiers;
+    const rowY = topPad + t * treeH;
+    // 该层宽度（三角形：顶部窄，底部宽）
+    const rowW = treeW * t * 0.92;
+    // 该层最多放几张（越往下越多）
+    const maxInRow = Math.max(1, Math.ceil(t * tiers * 1.5));
+    const inRow = Math.min(maxInRow, count - placed);
+    const spacing = inRow > 1 ? rowW / (inRow - 1) : 0;
+
+    for (let i = 0; i < inRow && placed < count; i++) {
+      const x =
+        inRow === 1
+          ? treeW / 2 + 10
+          : (treeW - rowW) / 2 + 10 + i * spacing;
+      positions.push({ x, y: rowY });
+      placed++;
+    }
   }
-  return tiers.reverse(); // 顶部在前
+  return positions;
+}
+
+// 树上的装饰小球
+function ornaments(treeW: number, treeH: number, topPad: number) {
+  const pts: { x: number; y: number; color: string; r: number }[] = [];
+  const colors = ["#E11D48", "#FBBF24", "#A78BFA", "#FB7185", "#FDE68A"];
+  for (let i = 0; i < 18; i++) {
+    const t = 0.15 + Math.random() * 0.75;
+    const y = topPad + t * treeH;
+    const halfW = treeW * t * 0.42;
+    const side = Math.random() > 0.5 ? 1 : -1;
+    const x = treeW / 2 + 10 + side * (Math.random() * halfW);
+    pts.push({
+      x,
+      y,
+      color: colors[i % colors.length],
+      r: 2.5 + Math.random() * 2,
+    });
+  }
+  return pts;
 }
 
 export default function LoveTree({ photos, onPhotoClick }: LoveTreeProps) {
   const count = photos.length;
-  if (count === 0) return null;
+  const [grown, setGrown] = useState(false);
+  const [showPhotos, setShowPhotos] = useState(false);
 
-  const tiers = getTiers(count);
-  const maxPerRow = Math.max(...tiers, 1);
+  // 树的尺寸（随照片数量增长）
+  const tiers = Math.max(2, Math.min(35, Math.ceil(Math.sqrt(count * 0.4))));
+  const treeH = tiers * 10;
+  const treeW = treeH * 0.7;
+  const svgW = treeW + 20;
+  const svgH = treeH + 65;
+  const topPad = 22;
+
+  // 心形大小（照片越多，每颗心越小）
+  const heartSize = count <= 30 ? 14 : Math.max(7, Math.round(14 / Math.sqrt(count / 30)));
+
+  // 装饰数据（useMemo 避免每次渲染重新随机）
+  const decor = useMemo(
+    () => ornaments(treeW, treeH, topPad),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [treeW, treeH]
+  );
+
+  // 照片位置
+  const positions = useMemo(
+    () => arrangePhotos(count, treeH, treeW, topPad),
+    [count, treeH, treeW, topPad]
+  );
+
+  // 打开页面 → 先播放生长动画
+  useEffect(() => {
+    setGrown(false);
+    setShowPhotos(false);
+    const t1 = setTimeout(() => setGrown(true), 100);
+    const t2 = setTimeout(() => setShowPhotos(true), 1200);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, []);
+
+  if (count === 0) return null;
 
   return (
     <div className="mb-8">
@@ -56,135 +132,188 @@ export default function LoveTree({ photos, onPhotoClick }: LoveTreeProps) {
         </defs>
       </svg>
 
-      <div className="max-w-3xl mx-auto">
-        <div className="love-tree-wrap relative">
-          {/* 树冠：心形照片层 */}
-          <div className="relative z-10">
-            {tiers.map((tierCount, rowIdx) => (
-              <div
-                key={rowIdx}
-                className="flex justify-center"
-                style={{ gap: "5px", marginBottom: "5px" }}
+      <div className="flex justify-center">
+        {/* 树生长容器：clip 从底部往上展开 */}
+        <div
+          className="overflow-hidden"
+          style={{
+            maxHeight: grown ? svgH + 20 : 0,
+            transition: "max-height 1.1s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+          }}
+        >
+          <svg
+            viewBox={`0 0 ${svgW} ${svgH}`}
+            style={{ width: Math.min(svgW, 500), display: "block" }}
+          >
+            <defs>
+              <linearGradient id="treeGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#C084FC" />
+                <stop offset="50%" stopColor="#A855F7" />
+                <stop offset="100%" stopColor="#7C3AED" />
+              </linearGradient>
+              <linearGradient id="trunkGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#D2691E" />
+                <stop offset="100%" stopColor="#8B4513" />
+              </linearGradient>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="2" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+
+            {/* 圣诞树主体（粉紫色锥形） */}
+            <polygon
+              points={`${svgW / 2},${topPad} ${svgW / 2 - treeW / 2 - 5},${topPad + treeH} ${svgW / 2 + treeW / 2 + 5},${topPad + treeH}`}
+              fill="url(#treeGrad)"
+              opacity="0.85"
+            />
+
+            {/* 树枝分层（锯齿边缘） */}
+            {Array.from({ length: Math.min(tiers, 25) }).map((_, i) => {
+              const t = (i + 1) / Math.min(tiers, 25);
+              const y = topPad + t * treeH;
+              const halfW = (treeW / 2) * t;
+              const cx = svgW / 2;
+              return (
+                <path
+                  key={`layer-${i}`}
+                  d={`
+                    M ${cx - halfW - 3} ${y}
+                    Q ${cx - halfW * 0.65} ${y - 5} ${cx - halfW * 0.3} ${y + 1}
+                    Q ${cx} ${y - 3} ${cx + halfW * 0.3} ${y + 1}
+                    Q ${cx + halfW * 0.65} ${y - 5} ${cx + halfW + 3} ${y}
+                  `}
+                  stroke="#7C3AED"
+                  strokeWidth="1.5"
+                  fill="none"
+                  opacity="0.35"
+                />
+              );
+            })}
+
+            {/* 白色雪顶边缘 */}
+            <polygon
+              points={`${svgW / 2},${topPad - 2} ${svgW / 2 - treeW * 0.08},${topPad + treeH * 0.12} ${svgW / 2 + treeW * 0.08},${topPad + treeH * 0.12}`}
+              fill="white"
+              opacity="0.35"
+            />
+
+            {/* 顶部星星 */}
+            <g filter="url(#glow)">
+              <text
+                x={svgW / 2}
+                y={topPad + 2}
+                textAnchor="middle"
+                fontSize="18"
+                fill="#FBBF24"
               >
-                {photos
-                  .slice(
-                    tiers.slice(0, rowIdx).reduce((s, t) => s + t, 0),
-                    tiers.slice(0, rowIdx).reduce((s, t) => s + t, 0) + tierCount
-                  )
-                  .map((photo, i) => (
-                    <LoveLeaf
-                      key={photo.id}
-                      photo={photo}
-                      index={rowIdx * 20 + i}
-                      maxPerRow={maxPerRow}
-                      onClick={() => onPhotoClick(photo.url)}
-                    />
-                  ))}
-              </div>
+                ★
+              </text>
+              <animate
+                attributeName="opacity"
+                values="0.8;1;0.8"
+                dur="2s"
+                repeatCount="indefinite"
+              />
+            </g>
+
+            {/* 装饰小球 */}
+            {decor.map((d, i) => (
+              <g key={`orn-${i}`}>
+                <circle cx={d.x} cy={d.y} r={d.r} fill={d.color} opacity="0.7" />
+                <circle
+                  cx={d.x - d.r * 0.3}
+                  cy={d.y - d.r * 0.3}
+                  r={d.r * 0.3}
+                  fill="white"
+                  opacity="0.5"
+                />
+              </g>
             ))}
-          </div>
 
-          {/* 树枝 + 树干 SVG */}
-          <div className="relative z-0" style={{ marginTop: "-40px" }}>
-            <svg
-              viewBox="0 0 400 180"
-              className="w-full"
-              style={{ display: "block" }}
-              preserveAspectRatio="xMidYMax meet"
+            {/* 树干 */}
+            <rect
+              x={svgW / 2 - 8}
+              y={topPad + treeH}
+              width="16"
+              height="35"
+              rx="3"
+              fill="url(#trunkGrad)"
+            />
+            <rect
+              x={svgW / 2 - 14}
+              y={topPad + treeH + 30}
+              width="28"
+              height="8"
+              rx="4"
+              fill="#8B4513"
+              opacity="0.5"
+            />
+
+            {/* 底部爱心 */}
+            <text
+              x={svgW / 2}
+              y={svgH - 2}
+              textAnchor="middle"
+              fontSize="14"
+              fill="#E11D48"
             >
-              {/* 树干 */}
-              <path
-                d="M 192 180 C 190 155 188 130 190 105 C 192 80 195 60 197 40 C 198 30 199 20 200 10"
-                stroke="#8B4513"
-                strokeWidth="18"
-                fill="none"
-                strokeLinecap="round"
-              />
-              <path
-                d="M 208 180 C 210 155 212 130 210 105 C 208 80 205 60 203 40"
-                stroke="#A0522D"
-                strokeWidth="12"
-                fill="none"
-                strokeLinecap="round"
-              />
+              ♥
+            </text>
 
-              {/* 主要树枝 */}
-              <path d="M 195 75 C 160 58 120 45 80 35" stroke="#8B4513" strokeWidth="9" fill="none" strokeLinecap="round" />
-              <path d="M 205 75 C 240 58 280 45 320 35" stroke="#A0522D" strokeWidth="9" fill="none" strokeLinecap="round" />
-              <path d="M 197 55 C 170 40 140 28 110 20" stroke="#A0522D" strokeWidth="7" fill="none" strokeLinecap="round" />
-              <path d="M 203 55 C 230 40 260 28 290 20" stroke="#8B4513" strokeWidth="7" fill="none" strokeLinecap="round" />
-              <path d="M 199 38 C 175 25 150 15 125 8" stroke="#8B4513" strokeWidth="5" fill="none" strokeLinecap="round" />
-              <path d="M 201 38 C 225 25 250 15 275 8" stroke="#A0522D" strokeWidth="5" fill="none" strokeLinecap="round" />
-              <path d="M 200 22 C 185 12 165 5 150 2" stroke="#A0522D" strokeWidth="4" fill="none" strokeLinecap="round" />
-              <path d="M 200 22 C 215 12 235 5 250 2" stroke="#8B4513" strokeWidth="4" fill="none" strokeLinecap="round" />
-
-              {/* 小枝 */}
-              <path d="M 140 50 C 125 65 105 72 85 78" stroke="#A0522D" strokeWidth="4" fill="none" strokeLinecap="round" />
-              <path d="M 260 50 C 275 65 295 72 315 78" stroke="#8B4513" strokeWidth="4" fill="none" strokeLinecap="round" />
-              <path d="M 120 35 C 100 50 80 58 60 65" stroke="#8B4513" strokeWidth="3" fill="none" strokeLinecap="round" />
-              <path d="M 280 35 C 300 50 320 58 340 65" stroke="#A0522D" strokeWidth="3" fill="none" strokeLinecap="round" />
-
-              {/* 树根 */}
-              <path d="M 192 178 C 180 183 165 185 150 182" stroke="#8B4513" strokeWidth="7" fill="none" strokeLinecap="round" />
-              <path d="M 208 178 C 220 183 235 185 250 182" stroke="#A0522D" strokeWidth="7" fill="none" strokeLinecap="round" />
-
-              {/* 爱心 */}
-              <text x="200" y="172" textAnchor="middle" fontSize="16" fill="#E11D48">♥</text>
-            </svg>
-          </div>
+            {/* 照片心形（生长动画完成后显示） */}
+            {showPhotos &&
+              positions.map((pos, i) => (
+                <motion.g
+                  key={photos[i]?.id ?? `p-${i}`}
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 350,
+                    damping: 22,
+                    delay: Math.min(i * 0.015, 0.6),
+                  }}
+                  style={{
+                    transformOrigin: `${pos.x}px ${pos.y}px`,
+                    cursor: "pointer",
+                  }}
+                  onClick={() => photos[i] && onPhotoClick(photos[i].url)}
+                >
+                  {/* 心形白色底 */}
+                  <path
+                    d={HEART}
+                    transform={`translate(${pos.x - heartSize}, ${pos.y - heartSize * 0.8}) scale(${heartSize / 12.5 * 0.82})`}
+                    fill="white"
+                  />
+                  {/* 心形照片 */}
+                  {photos[i] && (
+                    <image
+                      href={photos[i].url}
+                      x={pos.x - heartSize + 1.5}
+                      y={pos.y - heartSize * 0.8 + 1.5}
+                      width={heartSize * 2 - 3}
+                      height={heartSize * 2 - 3}
+                      clipPath="url(#heartClip)"
+                      preserveAspectRatio="xMidYMid slice"
+                    />
+                  )}
+                  {/* 心形粉色边框 */}
+                  <path
+                    d={HEART}
+                    transform={`translate(${pos.x - heartSize}, ${pos.y - heartSize * 0.8}) scale(${heartSize / 12.5 * 0.82})`}
+                    fill="none"
+                    stroke="#FDA4AF"
+                    strokeWidth="0.6"
+                  />
+                </motion.g>
+              ))}
+          </svg>
         </div>
       </div>
     </div>
-  );
-}
-
-function LoveLeaf({
-  photo,
-  index,
-  maxPerRow,
-  onClick,
-}: {
-  photo: Photo;
-  index: number;
-  maxPerRow: number;
-  onClick: () => void;
-}) {
-  return (
-    <motion.div
-      initial={{ scale: 0, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      exit={{ scale: 0, opacity: 0 }}
-      transition={{
-        type: "spring",
-        stiffness: 300,
-        damping: 22,
-        delay: Math.min(index * 0.015, 0.4),
-      }}
-      className="love-leaf relative cursor-pointer shrink-0"
-      style={{ width: "clamp(26px, 3.2vw, 36px)", aspectRatio: "37/30" }}
-      onClick={onClick}
-      title={photo.description || ""}
-    >
-      {/* 照片（心形裁剪） */}
-      <img
-        src={photo.url}
-        alt={photo.description || ""}
-        className="absolute inset-0 w-full h-full"
-        style={{
-          clipPath: `url(#heartClip)`,
-          objectFit: "cover",
-        }}
-        loading="lazy"
-      />
-      {/* 心形边框 */}
-      <svg
-        viewBox="0 0 37 30"
-        className="absolute inset-0 w-full h-full pointer-events-none"
-        fill="none"
-      >
-        <path d={HEART} fill="none" stroke="white" strokeWidth="2" />
-        <path d={HEART} fill="none" stroke="#FDA4AF" strokeWidth="0.8" />
-      </svg>
-    </motion.div>
   );
 }
