@@ -45,10 +45,10 @@ function ArrowRightIcon({ className = "w-4 h-4" }: { className?: string }) {
 }
 
 const navItems = [
-  { href: "/", label: "Timeline", icon: CalendarIcon },
-  { href: "/photos", label: "Photos", icon: PhotoIcon },
-  { href: "/diary", label: "Diary", icon: BookIcon },
-  { href: "/miss-you", label: "Miss You", icon: HeartIcon },
+  { href: "/", label: "时间轴", icon: CalendarIcon },
+  { href: "/photos", label: "照片墙", icon: PhotoIcon },
+  { href: "/diary", label: "日记", icon: BookIcon },
+  { href: "/miss-you", label: "想你了", icon: HeartIcon },
 ];
 
 export default function Navigation() {
@@ -67,7 +67,7 @@ export default function Navigation() {
         <div className="flex items-center justify-between h-14">
           <Link href="/" className="flex items-center gap-2 cursor-pointer">
             <HelloKittyLogo size={32} />
-            <span className="font-script text-rose-500 text-xl hidden sm:inline">Our Memoir</span>
+            <span className="font-script text-rose-500 text-xl hidden sm:inline">航林 & 佳钰</span>
           </Link>
 
           <div className="flex items-center gap-1">
@@ -95,7 +95,7 @@ export default function Navigation() {
               className="ml-2 flex items-center gap-1 px-3 py-1.5 rounded-full text-sm text-rose-400 hover:bg-rose-50 transition-all duration-200 cursor-pointer"
             >
               <ArrowRightIcon className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">Logout</span>
+              <span className="hidden sm:inline">退出</span>
             </button>
           </div>
         </div>

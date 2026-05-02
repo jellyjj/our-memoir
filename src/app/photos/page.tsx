@@ -53,14 +53,12 @@ function UploadIcon({ className = "w-5 h-5" }: { className?: string }) {
   );
 }
 
-function formatDate(dateStr: string) {
+function formatDateTime(dateStr: string) {
   const d = new Date(dateStr);
-  return d.toLocaleDateString("zh-CN", { year: "numeric", month: "long", day: "numeric" });
-}
-
-function formatTime(dateStr: string) {
-  const d = new Date(dateStr);
-  return d.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" });
+  return {
+    date: d.toLocaleDateString("zh-CN", { year: "numeric", month: "long", day: "numeric" }),
+    time: d.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit" }),
+  };
 }
 
 export default function PhotosPage() {
@@ -115,7 +113,6 @@ export default function PhotosPage() {
     setPhotos((p) => p.filter((x) => x.id !== id));
   };
 
-  // Memory photos (read-only, from timeline)
   const memoryPhotos: { url: string; title: string; date: string }[] = [];
   memories.forEach((m) => {
     const urls = JSON.parse(m.photos);
@@ -133,25 +130,22 @@ export default function PhotosPage() {
       <KittyDecorCorner position="bottom-left" />
 
       <div className="max-w-5xl mx-auto px-4 py-8">
-        {/* Header */}
         <div className="text-center mb-10 animate-slide-up">
           <h1 className="font-script text-4xl text-rose-500 mb-2">
-            Our Photo Wall
+            照片墙
           </h1>
-          <p className="text-rose-400 text-lg">Every photo tells a story</p>
+          <p className="text-rose-400 text-lg font-serif">每一张照片都是一个故事</p>
         </div>
 
-        {/* Upload button */}
         <div className="flex justify-center mb-8">
           <button
             onClick={() => setShowUpload(!showUpload)}
             className="kitty-btn flex items-center gap-2 cursor-pointer"
           >
-            {showUpload ? "Cancel" : <><UploadIcon /> Upload Photos</>}
+            {showUpload ? "取消" : <><UploadIcon /> 上传照片</>}
           </button>
         </div>
 
-        {/* Upload form */}
         <AnimatePresence>
           {showUpload && (
             <motion.div
@@ -163,7 +157,7 @@ export default function PhotosPage() {
               <div className="kitty-card p-6 space-y-4">
                 <input
                   className="kitty-input w-full"
-                  placeholder="Photo description (optional)"
+                  placeholder="照片描述（可选）"
                   value={uploadDesc}
                   onChange={(e) => setUploadDesc(e.target.value)}
                 />
@@ -174,7 +168,7 @@ export default function PhotosPage() {
                   onChange={handleUpload}
                   className="text-sm text-rose-400 cursor-pointer"
                 />
-                {uploading && <p className="text-rose-400 text-sm">Uploading...</p>}
+                {uploading && <p className="text-rose-400 text-sm">上传中...</p>}
               </div>
             </motion.div>
           )}
@@ -183,15 +177,14 @@ export default function PhotosPage() {
         {!hasPhotos ? (
           <div className="text-center py-20 text-rose-300">
             <CameraIcon className="w-16 h-16 mx-auto mb-4 opacity-40" />
-            <p className="text-lg">No photos yet — start uploading!</p>
+            <p className="text-lg font-serif">还没有照片，快去上传吧~</p>
           </div>
         ) : (
           <>
-            {/* Standalone photos */}
             {photos.length > 0 && (
               <div className="mb-10">
                 <h2 className="font-serif text-xl font-bold text-rose-500 mb-4">
-                  My Photos
+                  我的照片
                 </h2>
                 <div className="columns-2 md:columns-3 gap-4 space-y-4">
                   {photos.map((photo, i) => (
@@ -210,43 +203,38 @@ export default function PhotosPage() {
                       />
                       {photo.pinned && (
                         <div className="absolute top-2 left-2 bg-rose-500 text-white text-xs px-2 py-0.5 rounded-full flex items-center gap-1">
-                          <PinIcon className="w-3 h-3" /> Pinned
+                          <PinIcon className="w-3 h-3" /> 置顶
                         </div>
                       )}
                       <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
                         <button
                           onClick={() => togglePin(photo)}
                           className={`w-7 h-7 rounded-full flex items-center justify-center cursor-pointer transition-colors ${
-                            photo.pinned
-                              ? "bg-rose-500 text-white"
-                              : "bg-white/80 text-rose-500"
+                            photo.pinned ? "bg-rose-500 text-white" : "bg-white/80 text-rose-500"
                           }`}
-                          title={photo.pinned ? "Unpin" : "Pin"}
+                          title={photo.pinned ? "取消置顶" : "置顶"}
                         >
                           <PinIcon className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => handleDelete(photo.id)}
                           className="w-7 h-7 rounded-full bg-white/80 text-rose-400 flex items-center justify-center cursor-pointer hover:bg-rose-100 transition-colors"
-                          title="Delete"
+                          title="删除"
                         >
                           <CloseIcon className="w-3.5 h-3.5" />
                         </button>
                       </div>
-                      {/* Timestamp */}
                       <div className="px-2 py-1.5 flex items-center justify-between">
                         <span className="text-xs text-rose-400 font-serif">
-                          {formatDate(photo.createdAt)}
+                          {formatDateTime(photo.createdAt).date}
                         </span>
                         <span className="text-xs text-rose-300">
-                          {formatTime(photo.createdAt)}
+                          {formatDateTime(photo.createdAt).time}
                         </span>
                       </div>
                       {photo.description && (
                         <div className="px-2 pb-2">
-                          <p className="text-rose-500 text-xs font-medium">
-                            {photo.description}
-                          </p>
+                          <p className="text-rose-500 text-xs font-medium">{photo.description}</p>
                         </div>
                       )}
                     </motion.div>
@@ -255,11 +243,10 @@ export default function PhotosPage() {
               </div>
             )}
 
-            {/* Memory photos */}
             {memoryPhotos.length > 0 && (
               <div>
                 <h2 className="font-serif text-xl font-bold text-rose-500 mb-4">
-                  Memory Photos
+                  回忆里的照片
                 </h2>
                 <div className="columns-2 md:columns-3 gap-4 space-y-4">
                   {memoryPhotos.map((photo, i) => (
@@ -271,17 +258,11 @@ export default function PhotosPage() {
                       className="kitty-frame relative cursor-pointer break-inside-avoid"
                       onClick={() => setSelectedPhoto(photo.url)}
                     >
-                      <img
-                        src={photo.url}
-                        alt={photo.title}
-                        className="w-full rounded-lg"
-                      />
+                      <img src={photo.url} alt={photo.title} className="w-full rounded-lg" />
                       <div className="px-2 py-1.5">
-                        <p className="text-rose-500 text-xs font-medium truncate">
-                          {photo.title}
-                        </p>
-                        <p className="text-xs text-rose-300">
-                          {formatDate(photo.date)}
+                        <p className="text-rose-500 text-xs font-medium truncate">{photo.title}</p>
+                        <p className="text-xs text-rose-300 font-serif">
+                          {new Date(photo.date).toLocaleDateString("zh-CN")}
                         </p>
                       </div>
                     </motion.div>
@@ -293,7 +274,6 @@ export default function PhotosPage() {
         )}
       </div>
 
-      {/* Lightbox */}
       {selectedPhoto && (
         <div
           className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 cursor-pointer"

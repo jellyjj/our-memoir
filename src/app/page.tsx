@@ -40,14 +40,6 @@ function TrashIcon({ className = "w-4 h-4" }: { className?: string }) {
   );
 }
 
-function UploadIcon({ className = "w-5 h-5" }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
-    </svg>
-  );
-}
-
 function EmptyIcon({ className = "w-16 h-16" }: { className?: string }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" opacity={0.3}>
@@ -142,27 +134,24 @@ export default function TimelinePage() {
       <KittyDecorCorner position="bottom-right" />
 
       <div className="max-w-3xl mx-auto px-4 py-8">
-        {/* Header */}
         <div className="text-center mb-10 animate-slide-up">
           <h1 className="font-script text-4xl text-rose-500 mb-3">
-            Our Story
+            我们的故事
           </h1>
           <p className="text-rose-400 text-lg font-serif">
-            Together for <span className="text-3xl font-bold text-rose-500">{daysTogether}</span> days
+            已经在一起 <span className="text-3xl font-bold text-rose-500">{daysTogether}</span> 天啦
           </p>
         </div>
 
-        {/* Add button */}
         <div className="flex justify-center mb-8">
           <button
             onClick={() => (showForm ? resetForm() : setShowForm(true))}
             className="kitty-btn flex items-center gap-2 cursor-pointer"
           >
-            {showForm ? "Cancel" : <><PlusIcon /> New Memory</>}
+            {showForm ? "取消" : <><PlusIcon /> 添加新回忆</>}
           </button>
         </div>
 
-        {/* Form */}
         <AnimatePresence>
           {showForm && (
             <motion.div
@@ -174,13 +163,13 @@ export default function TimelinePage() {
               <div className="kitty-card p-6 space-y-4">
                 <input
                   className="kitty-input w-full"
-                  placeholder="Memory title"
+                  placeholder="回忆标题"
                   value={form.title}
                   onChange={(e) => setForm({ ...form, title: e.target.value })}
                 />
                 <textarea
                   className="kitty-input w-full h-24 resize-none"
-                  placeholder="Write about this moment..."
+                  placeholder="记录一下这个美好时刻..."
                   value={form.content}
                   onChange={(e) => setForm({ ...form, content: e.target.value })}
                 />
@@ -191,7 +180,7 @@ export default function TimelinePage() {
                   onChange={(e) => setForm({ ...form, date: e.target.value })}
                 />
                 <div>
-                  <label className="block text-rose-500 text-sm mb-2 font-serif">Upload photos</label>
+                  <label className="block text-rose-500 text-sm mb-2 font-serif">上传照片</label>
                   <input
                     type="file"
                     accept="image/*"
@@ -199,7 +188,7 @@ export default function TimelinePage() {
                     onChange={handleUpload}
                     className="text-sm text-rose-400 cursor-pointer"
                   />
-                  {uploading && <p className="text-rose-400 text-sm mt-1">Uploading...</p>}
+                  {uploading && <p className="text-rose-400 text-sm mt-1">上传中...</p>}
                   {form.photos.length > 0 && (
                     <div className="flex gap-2 mt-2 flex-wrap">
                       {form.photos.map((url, i) => (
@@ -214,21 +203,20 @@ export default function TimelinePage() {
                   )}
                 </div>
                 <button onClick={handleSubmit} className="kitty-btn w-full cursor-pointer">
-                  {editingId ? "Update Memory" : "Save Memory"}
+                  {editingId ? "更新回忆" : "保存回忆"}
                 </button>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Timeline */}
         <div className="relative">
           <div className="absolute left-6 top-0 bottom-0 w-0.5 timeline-line rounded-full" />
 
           {memories.length === 0 ? (
             <div className="text-center py-20 text-rose-300">
               <EmptyIcon className="w-16 h-16 mx-auto mb-4" />
-              <p className="text-lg font-serif">No memories yet — add your first one!</p>
+              <p className="text-lg font-serif">还没有回忆，快去添加第一个吧~</p>
             </div>
           ) : (
             memories.map((memory, index) => (
@@ -239,7 +227,6 @@ export default function TimelinePage() {
                 transition={{ delay: index * 0.1 }}
                 className="relative pl-16 pb-8"
               >
-                {/* Timeline dot */}
                 <div className="absolute left-4 top-2 w-5 h-5 bg-rose-400 rounded-full border-4 border-white shadow-md z-10 flex items-center justify-center">
                   <HelloKittyBow size={12} />
                 </div>
@@ -247,20 +234,20 @@ export default function TimelinePage() {
                 <div className="kitty-card p-5">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs text-rose-400 bg-rose-50 px-3 py-1 rounded-full font-serif">
-                      {new Date(memory.date).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
+                      {new Date(memory.date).toLocaleDateString("zh-CN")}
                     </span>
                     <div className="flex gap-2">
                       <button
                         onClick={() => handleEdit(memory)}
                         className="text-rose-300 hover:text-rose-500 text-sm cursor-pointer transition-colors duration-200 flex items-center gap-1"
                       >
-                        <PencilIcon className="w-3.5 h-3.5" /> Edit
+                        <PencilIcon className="w-3.5 h-3.5" /> 编辑
                       </button>
                       <button
                         onClick={() => handleDelete(memory.id)}
                         className="text-rose-300 hover:text-rose-500 text-sm cursor-pointer transition-colors duration-200 flex items-center gap-1"
                       >
-                        <TrashIcon className="w-3.5 h-3.5" /> Delete
+                        <TrashIcon className="w-3.5 h-3.5" /> 删除
                       </button>
                     </div>
                   </div>

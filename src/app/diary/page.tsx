@@ -16,13 +16,13 @@ interface Diary {
 }
 
 const moods = [
-  { value: "happy", label: "Happy", icon: "😊" },
-  { value: "love", label: "Sweet", icon: "🥰" },
-  { value: "excited", label: "Excited", icon: "🤩" },
-  { value: "miss", label: "Missing", icon: "🥺" },
-  { value: "grateful", label: "Grateful", icon: "🙏" },
-  { value: "angry", label: "Upset", icon: "😤" },
-  { value: "sad", label: "Sad", icon: "😢" },
+  { value: "happy", label: "开心", icon: "😊" },
+  { value: "love", label: "甜蜜", icon: "🥰" },
+  { value: "excited", label: "兴奋", icon: "🤩" },
+  { value: "miss", label: "想念", icon: "🥺" },
+  { value: "grateful", label: "感恩", icon: "🙏" },
+  { value: "angry", label: "小生气", icon: "😤" },
+  { value: "sad", label: "难过", icon: "😢" },
 ];
 
 const getMoodIcon = (mood: string) =>
@@ -73,18 +73,13 @@ export default function DiaryPage() {
   });
 
   useEffect(() => {
-    fetch("/api/diary")
-      .then((r) => r.json())
-      .then(setDiaries);
+    fetch("/api/diary").then((r) => r.json()).then(setDiaries);
   }, []);
 
   const resetForm = () => {
     setForm({
-      title: "",
-      content: "",
-      mood: "happy",
-      date: new Date().toISOString().slice(0, 10),
-      author: "A",
+      title: "", content: "", mood: "happy",
+      date: new Date().toISOString().slice(0, 10), author: "A",
     });
     setEditingId(null);
     setShowForm(false);
@@ -92,7 +87,6 @@ export default function DiaryPage() {
 
   const handleSubmit = async () => {
     if (!form.title || !form.content) return;
-
     if (editingId) {
       await fetch("/api/diary", {
         method: "PUT",
@@ -106,19 +100,14 @@ export default function DiaryPage() {
         body: JSON.stringify(form),
       });
     }
-
     resetForm();
-    const data = await fetch("/api/diary").then((r) => r.json());
-    setDiaries(data);
+    setDiaries(await fetch("/api/diary").then((r) => r.json()));
   };
 
   const handleEdit = (diary: Diary) => {
     setForm({
-      title: diary.title,
-      content: diary.content,
-      mood: diary.mood,
-      date: diary.date.slice(0, 10),
-      author: diary.author,
+      title: diary.title, content: diary.content, mood: diary.mood,
+      date: diary.date.slice(0, 10), author: diary.author,
     });
     setEditingId(diary.id);
     setShowForm(true);
@@ -137,10 +126,8 @@ export default function DiaryPage() {
 
       <div className="max-w-3xl mx-auto px-4 py-8">
         <div className="text-center mb-10 animate-slide-up">
-          <h1 className="font-script text-4xl text-rose-500 mb-2">
-            Our Diary
-          </h1>
-          <p className="text-rose-400 text-lg font-serif">Writing down our days</p>
+          <h1 className="font-script text-4xl text-rose-500 mb-2">我们的日记</h1>
+          <p className="text-rose-400 text-lg font-serif">记录每一天的心情</p>
         </div>
 
         <div className="flex justify-center mb-8">
@@ -148,11 +135,10 @@ export default function DiaryPage() {
             onClick={() => (showForm ? resetForm() : setShowForm(true))}
             className="kitty-btn flex items-center gap-2 cursor-pointer"
           >
-            {showForm ? "Cancel" : <><PlusIcon /> New Entry</>}
+            {showForm ? "取消" : <><PlusIcon /> 写日记</>}
           </button>
         </div>
 
-        {/* Form */}
         <AnimatePresence>
           {showForm && (
             <motion.div
@@ -162,113 +148,77 @@ export default function DiaryPage() {
               className="overflow-hidden mb-8"
             >
               <div className="kitty-card p-6 space-y-4">
-                <input
-                  className="kitty-input w-full"
-                  placeholder="Diary title"
-                  value={form.title}
-                  onChange={(e) => setForm({ ...form, title: e.target.value })}
-                />
-                <textarea
-                  className="kitty-input w-full h-32 resize-none"
-                  placeholder="What's on your mind today..."
-                  value={form.content}
-                  onChange={(e) => setForm({ ...form, content: e.target.value })}
-                />
+                <input className="kitty-input w-full" placeholder="日记标题" value={form.title}
+                  onChange={(e) => setForm({ ...form, title: e.target.value })} />
+                <textarea className="kitty-input w-full h-32 resize-none" placeholder="今天想说点什么..."
+                  value={form.content} onChange={(e) => setForm({ ...form, content: e.target.value })} />
                 <div className="grid grid-cols-3 gap-3">
                   <div>
-                    <label className="block text-rose-500 text-sm mb-1 font-serif">Date</label>
-                    <input
-                      type="date"
-                      className="kitty-input w-full text-sm"
-                      value={form.date}
-                      onChange={(e) => setForm({ ...form, date: e.target.value })}
-                    />
+                    <label className="block text-rose-500 text-sm mb-1 font-serif">日期</label>
+                    <input type="date" className="kitty-input w-full text-sm" value={form.date}
+                      onChange={(e) => setForm({ ...form, date: e.target.value })} />
                   </div>
                   <div>
-                    <label className="block text-rose-500 text-sm mb-1 font-serif">Author</label>
-                    <select
-                      className="kitty-input w-full text-sm cursor-pointer"
-                      value={form.author}
-                      onChange={(e) => setForm({ ...form, author: e.target.value })}
-                    >
-                      <option value="A">Hang Lin</option>
-                      <option value="B">Jia Yu</option>
+                    <label className="block text-rose-500 text-sm mb-1 font-serif">谁写的</label>
+                    <select className="kitty-input w-full text-sm cursor-pointer" value={form.author}
+                      onChange={(e) => setForm({ ...form, author: e.target.value })}>
+                      <option value="A">航林</option>
+                      <option value="B">佳钰</option>
                     </select>
                   </div>
                   <div>
-                    <label className="block text-rose-500 text-sm mb-1 font-serif">Mood</label>
-                    <select
-                      className="kitty-input w-full text-sm cursor-pointer"
-                      value={form.mood}
-                      onChange={(e) => setForm({ ...form, mood: e.target.value })}
-                    >
+                    <label className="block text-rose-500 text-sm mb-1 font-serif">心情</label>
+                    <select className="kitty-input w-full text-sm cursor-pointer" value={form.mood}
+                      onChange={(e) => setForm({ ...form, mood: e.target.value })}>
                       {moods.map((m) => (
-                        <option key={m.value} value={m.value}>
-                          {m.icon} {m.label}
-                        </option>
+                        <option key={m.value} value={m.value}>{m.icon} {m.label}</option>
                       ))}
                     </select>
                   </div>
                 </div>
                 <button onClick={handleSubmit} className="kitty-btn w-full cursor-pointer">
-                  {editingId ? "Update Entry" : "Save Entry"}
+                  {editingId ? "更新日记" : "保存日记"}
                 </button>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Diary list */}
         {diaries.length === 0 ? (
           <div className="text-center py-20 text-rose-300">
             <BookIcon className="w-16 h-16 mx-auto mb-4" />
-            <p className="text-lg font-serif">No entries yet — write your first one!</p>
+            <p className="text-lg font-serif">还没有日记，写下今天的心情吧~</p>
           </div>
         ) : (
           <div className="space-y-4">
             {diaries.map((diary, index) => (
-              <motion.div
-                key={diary.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-                className="kitty-card p-5"
-              >
+              <motion.div key={diary.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }} className="kitty-card p-5">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">{getMoodIcon(diary.mood)}</span>
                     <div>
-                      <h3 className="text-lg font-bold text-rose-600 font-serif">
-                        {diary.title}
-                      </h3>
+                      <h3 className="text-lg font-bold text-rose-600 font-serif">{diary.title}</h3>
                       <div className="flex items-center gap-2 text-xs text-rose-400">
-                        <span className="font-serif">
-                          {new Date(diary.date).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
-                        </span>
+                        <span className="font-serif">{new Date(diary.date).toLocaleDateString("zh-CN")}</span>
                         <span className="bg-rose-100 px-2 py-0.5 rounded-full text-rose-500">
-                          {diary.author === "A" ? "Hang Lin" : "Jia Yu"}
+                          {diary.author === "A" ? "航林" : "佳钰"}
                         </span>
                       </div>
                     </div>
                   </div>
                   <div className="flex gap-2">
-                    <button
-                      onClick={() => handleEdit(diary)}
-                      className="text-rose-300 hover:text-rose-500 text-sm cursor-pointer transition-colors duration-200 flex items-center gap-1"
-                    >
-                      <PencilIcon className="w-3.5 h-3.5" /> Edit
+                    <button onClick={() => handleEdit(diary)}
+                      className="text-rose-300 hover:text-rose-500 text-sm cursor-pointer transition-colors duration-200 flex items-center gap-1">
+                      <PencilIcon className="w-3.5 h-3.5" /> 编辑
                     </button>
-                    <button
-                      onClick={() => handleDelete(diary.id)}
-                      className="text-rose-300 hover:text-rose-500 text-sm cursor-pointer transition-colors duration-200 flex items-center gap-1"
-                    >
-                      <TrashIcon className="w-3.5 h-3.5" /> Delete
+                    <button onClick={() => handleDelete(diary.id)}
+                      className="text-rose-300 hover:text-rose-500 text-sm cursor-pointer transition-colors duration-200 flex items-center gap-1">
+                      <TrashIcon className="w-3.5 h-3.5" /> 删除
                     </button>
                   </div>
                 </div>
-                <p className="text-rose-500 text-sm leading-relaxed whitespace-pre-wrap font-serif">
-                  {diary.content}
-                </p>
+                <p className="text-rose-500 text-sm leading-relaxed whitespace-pre-wrap font-serif">{diary.content}</p>
               </motion.div>
             ))}
           </div>
