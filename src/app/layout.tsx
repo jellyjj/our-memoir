@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "航林 & 佳钰 · 我们的故事",
   description: "记录属于我们的每一个甜蜜时刻",
   icons: {
-    icon: "/kitty/Kitty-icon.webp",
+    icon: "/kitty/icon_new.svg",
   },
 };
 

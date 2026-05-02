@@ -1,15 +1,9 @@
 "use client";
 
-const kittyImages = [
-  "/kitty/kitty1.webp",
-  "/kitty/kitty2.webp",
-  "/kitty/kitty3.webp",
-];
-
 export function HelloKittyLogo({ size = 48 }: { size?: number }) {
   return (
     <img
-      src="/kitty/kitty2.webp"
+      src="/kitty/icon_new.svg"
       alt="Hello Kitty"
       style={{ width: size, height: size }}
     />
@@ -92,12 +86,10 @@ export function KittyDecorCorner({ position = "bottom-right" }: { position?: str
     "bottom-right": "bottom-16 right-4",
   }[position] || "bottom-16 right-4";
 
-  const kittyIndex = position === "bottom-left" ? 0 : position === "top-right" ? 2 : 1;
-
   return (
     <div className={`fixed ${posClass} opacity-15 pointer-events-none z-0`}>
       <img
-        src={kittyImages[kittyIndex]}
+        src="/kitty/icon_new.svg"
         alt="Hello Kitty"
         style={{ width: 100, height: 100 }}
       />
