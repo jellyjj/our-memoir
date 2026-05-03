@@ -16,5 +16,9 @@ if [ ! -f /app/data/dev.db ]; then
   chown nextjs:nodejs /app/data/dev.db
 fi
 
+# Sync schema changes (idempotent, safe for existing databases)
+echo "同步数据库 schema..."
+DATABASE_URL="file:/app/data/dev.db" npx prisma db push --skip-generate
+
 # Drop to nextjs user and run the command
 exec su-exec nextjs "$@"
