@@ -10,7 +10,7 @@ if [ ! -f /app/data/dev.db ]; then
     cp /app/prisma/dev.db /app/data/dev.db
     echo "已复制种子数据库。"
   else
-    DATABASE_URL="file:/app/data/dev.db" npx prisma db push
+    DATABASE_URL="file:/app/data/dev.db" /app/node_modules/.bin/prisma db push
     echo "已创建空数据库。"
   fi
   chown nextjs:nodejs /app/data/dev.db
@@ -18,7 +18,7 @@ fi
 
 # Sync schema changes (idempotent, safe for existing databases)
 echo "同步数据库 schema..."
-DATABASE_URL="file:/app/data/dev.db" npx prisma db push --skip-generate
+DATABASE_URL="file:/app/data/dev.db" /app/node_modules/.bin/prisma db push --skip-generate
 
 # Drop to nextjs user and run the command
 exec su-exec nextjs "$@"
