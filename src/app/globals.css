@@ -222,3 +222,17 @@ body {
 .love-leaf {
   cursor: pointer;
 }
+
+/* Comment bubble */
+.comment-bubble {
+  transition: all 0.2s ease-out;
+}
+
+.comment-bubble:hover {
+  box-shadow: 0 2px 8px rgba(225, 29, 72, 0.08);
+}
+
+/* Sticker picker grid */
+.sticker-grid button img {
+  border-radius: 0.5rem;
+}

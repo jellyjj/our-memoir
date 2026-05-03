@@ -50,3 +50,15 @@ model Photo {
 
   @@index([pinned, createdAt])
 }
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  memoryId  Int
+  author    String
+  content   String   @default("")
+  sticker   String?
+  image     String?
+  createdAt DateTime @default(now())
+
+  @@index([memoryId])
+}

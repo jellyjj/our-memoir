@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import { FloatingHearts, KittyDecorCorner, HelloKittyBow } from "@/components/HelloKitty";
+import CommentSection from "@/components/CommentSection";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Memory {
@@ -270,6 +271,7 @@ export default function TimelinePage() {
                       ))}
                     </div>
                   )}
+                  <CommentSection memoryId={memory.id} />
                 </div>
               </motion.div>
             ))
